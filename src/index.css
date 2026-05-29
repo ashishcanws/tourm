@@ -593,3 +593,240 @@ body {
         transform: translateX(0);
     }
 }
+
+.counter-card-wrap {
+    margin: 50px 0 25px 0;
+}
+.counter-card {
+    position: relative;
+    background-color: #E9F6F9;
+    padding: 93px 28px;
+    width: 264px;
+    height: 264px;
+    display: block;
+    margin: auto;
+    text-align: center;
+    border-radius: 50%;
+    z-index: 2;
+    margin-top: 158px;
+}
+.counter-card .counter-shape {
+    position: absolute;
+    inset: -24px;
+    width: 312px;
+    height: 312px;
+    border-radius: 50%;
+    border: 1px solid #1ca8cb;
+    -webkit-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+}
+.counter-card .counter-shape:after, .counter-card .counter-shape:before {
+    content: "";
+    position: absolute;
+    bottom: 20%;
+    right: 7%;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-sizing: content-box;
+    background-color:#1ca8cb;
+}
+.counter-card .counter-shape span {
+    position: absolute;
+    top: unset;
+    bottom: 55px;
+    right: 15px;
+    width: 24px;
+    height: 24px;
+    display: block;
+    border-radius: 50%;
+    background-color: rgba(28, 168, 203, 0.2);
+    z-index: 2;
+}
+.counter-card .counter-shape:after {
+    background-color: #1ca8cb;
+}
+.ripple-animation3,
+.counter-card .counter-shape::after,
+.counter-item .counter-shape::after {
+  animation: ripple3 3s ease-in-out infinite;
+}
+
+@keyframes ripple3 {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: scale(2.9);
+    opacity: 0.2;
+  }
+}
+.counter-card .media-body {
+    text-align: center;
+}
+.counter-card .box-number {
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 48px;
+    text-transform: capitalize;
+    color: #000;
+    margin-bottom: 7px;
+}
+.counter-card .counter-title {
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 36px;
+    color: #000;
+}
+.grid-for {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+.counter-card-wrap:nth-child(even) .counter-card {
+    margin-top: 0px;
+}
+.counter-card-wrap:nth-child(even) .counter-card {
+    margin-top: 0px;
+}
+.counter-card-wrap:nth-child(even) .counter-card .counter-shape:before, .counter-card-wrap:nth-child(even) .counter-card .counter-shape:after {
+    bottom: unset;
+    top: 10%;
+    right: 16%;
+}
+.counter-card-wrap:nth-child(even) .counter-card .counter-shape span {
+    top: 24px;
+    right: 43px;
+}
+.counter-card:hover .counter-shape {
+    -webkit-animation: spin 10s linear infinite;
+    animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.three-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.travel-section {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* TOP SECTION */
+.travel-canvas-area {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 220px;
+}
+
+/* TOP MINI ICONS */
+.top-floating-icons {
+  position: absolute;
+  top: 40px;
+  right: 22%;
+  display: flex;
+  gap: 15px;
+  font-size: 34px;
+  z-index: 2;
+}
+
+/* BOTTOM PATTERN */
+.travel-pattern-bg {
+  height: 95px;
+  background-color: #e9f4f6;
+
+  background-image:
+    radial-gradient(
+      rgba(0, 0, 0, 0.04) 2px,
+      transparent 2px
+    );
+
+  background-size: 60px 60px;
+
+  border-top: 1px solid #dbe7ea;
+}
+
+/* SCROLL TOP BUTTON */
+.scroll-top-button {
+  position: absolute;
+  right: 30px;
+  bottom: 25px;
+
+  width: 54px;
+  height: 54px;
+
+  border-radius: 50%;
+  border: 2px solid #16a7d6;
+
+  background: #fff;
+  color: #16a7d6;
+
+  font-size: 28px;
+  cursor: pointer;
+
+  transition: 0.3s ease;
+}
+
+.scroll-top-button:hover {
+  transform: translateY(-5px);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .travel-canvas-area {
+    height: 180px;
+  }
+
+  canvas {
+    height: 180px;
+  }
+
+  .top-floating-icons {
+    font-size: 24px;
+    right: 10%;
+    top: 20px;
+  }
+
+  .scroll-top-button {
+    width: 45px;
+    height: 45px;
+    font-size: 22px;
+  }
+}

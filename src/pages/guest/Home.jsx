@@ -8,6 +8,8 @@ import {
   FormControl,
   Container,
   Grid,
+  Rating,
+  IconButton,
 } from "@mui/material";
 
 import { ArrowForward, ArrowBack } from "@mui/icons-material";
@@ -18,12 +20,23 @@ import HikingOutlinedIcon from "@mui/icons-material/HikingOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+
+
+// components 
+import Team from "../../components/Team";
+import Testimonial from '../../components/Testimonial';
+import Blog from '../../components/Blog';
+import TravelFloatingIcons from "../../components/TravelFloatingIcons";
+
 
 const slides = [
   "https://tourm-react.netlify.app/assets/img/hero/hero_bg_1_1.jpg",
@@ -115,6 +128,56 @@ const destinations = [
     listing: "12 Listing",
   },
 ];
+
+const tours=[
+	{
+		image:"https://tourm-react.netlify.app/assets/img/tour/tour_box_1.jpg",
+		title:"Greece Tour Package",
+		price:"980",
+		days:"4 Days",
+		rating:3.5,
+	},
+	{
+		image:"https://tourm-react.netlify.app/assets/img/tour/tour_box_2.jpg",
+		title:"Italy Tour Package",
+		price:"880",
+		days:"4 Days",
+		rating:4.5,
+	},
+	{
+		image:"https://tourm-react.netlify.app/assets/img/tour/tour_box_3.jpg",
+		title:"Dubai Tour Package",
+		price:"780",
+		days:"4 Days",
+		rating:2.5,
+	},
+
+	{
+		image:"https://tourm-react.netlify.app/assets/img/tour/tour_box_4.jpg",
+		title:"Switzerland Tour",
+		price:"780",
+		days:"4 Days",
+		rating: 1.5,
+	},
+
+	{
+		image:"https://tourm-react.netlify.app/assets/img/tour/tour_box_3.jpg",
+		title:"Dubai Tour Package",
+		price:"780",
+		days:"4 Days",
+		rating:5,
+	},
+	
+];
+
+const imgStyle = {
+  width: "auto",
+  height: "220px",
+  objectFit: "cover",
+  borderRadius: "30px",
+};
+
+
 
 export default function HomeHero() {
   return (
@@ -265,101 +328,101 @@ export default function HomeHero() {
 
 			{/* SEARCH FORM */}
 			<Box className="hero-search-form">
-			{/* DESTINATION */}
-			<Box className="search-item">
-				<FmdGoodOutlinedIcon className="search-icon" />
+				{/* DESTINATION */}
+				<Box className="search-item">
+					<FmdGoodOutlinedIcon className="search-icon" />
 
-				<Box sx={{ flex: 1 }}>
-				<Typography className="label-text">Destination</Typography>
+					<Box sx={{ flex: 1 }}>
+					<Typography className="label-text">Destination</Typography>
 
-				<FormControl fullWidth variant="standard">
-					<Select
-					defaultValue=""
-					disableUnderline
-					displayEmpty
-					IconComponent={KeyboardArrowDownIcon}
-					className="hero-select"
-					>
-					<MenuItem value="">Select Destination</MenuItem>
-					<MenuItem value="bali">Bali</MenuItem>
-					<MenuItem value="dubai">Dubai</MenuItem>
-					<MenuItem value="maldives">Maldives</MenuItem>
-					</Select>
-				</FormControl>
+					<FormControl fullWidth variant="standard">
+						<Select
+						defaultValue=""
+						disableUnderline
+						displayEmpty
+						IconComponent={KeyboardArrowDownIcon}
+						className="hero-select"
+						>
+						<MenuItem value="">Select Destination</MenuItem>
+						<MenuItem value="bali">Bali</MenuItem>
+						<MenuItem value="dubai">Dubai</MenuItem>
+						<MenuItem value="maldives">Maldives</MenuItem>
+						</Select>
+					</FormControl>
+					</Box>
 				</Box>
-			</Box>
 
-			{/* TYPE */}
-			<Box className="search-item">
-				<HikingOutlinedIcon className="search-icon" />
+				{/* TYPE */}
+				<Box className="search-item">
+					<HikingOutlinedIcon className="search-icon" />
 
-				<Box sx={{ flex: 1 }}>
-				<Typography className="label-text">Type</Typography>
+					<Box sx={{ flex: 1 }}>
+					<Typography className="label-text">Type</Typography>
 
-				<FormControl fullWidth variant="standard">
-					<Select
-					defaultValue=""
-					disableUnderline
-					displayEmpty
-					IconComponent={KeyboardArrowDownIcon}
-					className="hero-select"
-					>
-					<MenuItem value="">Adventure</MenuItem>
-					<MenuItem value="adventure">Adventure</MenuItem>
-					<MenuItem value="beach">Beach</MenuItem>
-					</Select>
-				</FormControl>
+					<FormControl fullWidth variant="standard">
+						<Select
+						defaultValue=""
+						disableUnderline
+						displayEmpty
+						IconComponent={KeyboardArrowDownIcon}
+						className="hero-select"
+						>
+						<MenuItem value="">Adventure</MenuItem>
+						<MenuItem value="adventure">Adventure</MenuItem>
+						<MenuItem value="beach">Beach</MenuItem>
+						</Select>
+					</FormControl>
+					</Box>
 				</Box>
-			</Box>
 
-			{/* DURATION */}
-			<Box className="search-item">
-				<AccessTimeOutlinedIcon className="search-icon" />
+				{/* DURATION */}
+				<Box className="search-item">
+					<AccessTimeOutlinedIcon className="search-icon" />
 
-				<Box sx={{ flex: 1 }}>
-				<Typography className="label-text">Duration</Typography>
+					<Box sx={{ flex: 1 }}>
+					<Typography className="label-text">Duration</Typography>
 
-				<FormControl fullWidth variant="standard">
-					<Select
-					defaultValue=""
-					disableUnderline
-					displayEmpty
-					IconComponent={KeyboardArrowDownIcon}
-					className="hero-select"
-					>
-					<MenuItem value="">Duration</MenuItem>
-					<MenuItem value="3">3 Days</MenuItem>
-					<MenuItem value="7">7 Days</MenuItem>
-					</Select>
-				</FormControl>
+					<FormControl fullWidth variant="standard">
+						<Select
+						defaultValue=""
+						disableUnderline
+						displayEmpty
+						IconComponent={KeyboardArrowDownIcon}
+						className="hero-select"
+						>
+						<MenuItem value="">Duration</MenuItem>
+						<MenuItem value="3">3 Days</MenuItem>
+						<MenuItem value="7">7 Days</MenuItem>
+						</Select>
+					</FormControl>
+					</Box>
 				</Box>
-			</Box>
 
-			{/* CATEGORY */}
-			<Box className="search-item no-border">
-				<MapOutlinedIcon className="search-icon" />
+				{/* CATEGORY */}
+				<Box className="search-item no-border">
+					<MapOutlinedIcon className="search-icon" />
 
-				<Box sx={{ flex: 1 }}>
-				<Typography className="label-text">Tour Category</Typography>
+					<Box sx={{ flex: 1 }}>
+					<Typography className="label-text">Tour Category</Typography>
 
-				<FormControl fullWidth variant="standard">
-					<Select
-					defaultValue=""
-					disableUnderline
-					displayEmpty
-					IconComponent={KeyboardArrowDownIcon}
-					className="hero-select"
-					>
-					<MenuItem value="">Select Category</MenuItem>
-					<MenuItem value="family">Family</MenuItem>
-					<MenuItem value="honeymoon">Honeymoon</MenuItem>
-					</Select>
-				</FormControl>
+					<FormControl fullWidth variant="standard">
+						<Select
+						defaultValue=""
+						disableUnderline
+						displayEmpty
+						IconComponent={KeyboardArrowDownIcon}
+						className="hero-select"
+						>
+						<MenuItem value="">Select Category</MenuItem>
+						<MenuItem value="family">Family</MenuItem>
+						<MenuItem value="honeymoon">Honeymoon</MenuItem>
+						</Select>
+					</FormControl>
+					</Box>
 				</Box>
-			</Box>
 
-			{/* BUTTON */}
-			<Button className="search-btn">Search</Button>
+				{/* BUTTON */}
+				<Button className="search-btn">Search</Button>
 			</Box>
       	</Box>
 
@@ -367,76 +430,76 @@ export default function HomeHero() {
 			<Box sx={{ margin: "0 auto" }}>
 			<Box className="category-sections">
 				<Container maxWidth="">
-				{/* HEADING */}
-				<Box sx={{ margin: "0 auto", mb: "50px", textAlign: "center" }}>
-					<Typography
-					sx={{
-						fontSize: "50px",
-						fontFamily: "Montez",
-						mb: 1,
-						color: "#113d48",
-					}}
-					>
-					Get unforgettable pleasure with us
-					</Typography>
-
-					<Typography
-					sx={{ fontSize: "50px", color: "#113d48", fontWeight: "700" }}
-					>
-					Tour Categories
-					</Typography>
-				</Box>
-				{/* SLIDER */}
-				<Swiper
-					modules={[Pagination, Autoplay]}
-					slidesPerView={"auto"}
-					loop={true}
-					speed={1200}
-					spaceBetween={25}
-					autoplay={{
-					delay: 2500,
-					disableOnInteraction: false,
-					}}
-					pagination={{
-					clickable: true,
-					}}
-					className="swiper swiper-initialized swiper-horizontal th-slider has-shadow categorySlider swiper-backface-hidden"
-					breakpoints={{
-					0: {
-						slidesPerView: 1,
-					},
-
-					576: {
-						slidesPerView: 2,
-					},
-
-					768: {
-						slidesPerView: 3,
-					},
-
-					1200: {
-						slidesPerView: 5,
-					},
-					}}
-				>
-					{categories.map((item, index) => (
-					<SwiperSlide key={index}>
-						<Box className="category-card">
-						{/* IMAGE */}
-						<Box className="image-wrapper">
-							<img src={item.image} alt={item.title} />
-						</Box>
-
-						{/* TEXT */}
-						<Typography className="category-title">
-							{item.title}
+					{/* HEADING */}
+					<Box sx={{ margin: "0 auto", mb: "50px", textAlign: "center" }}>
+						<Typography
+						sx={{
+							fontSize: "50px",
+							fontFamily: "Montez",
+							mb: 1,
+							color: "#113d48",
+						}}
+						>
+						Get unforgettable pleasure with us
 						</Typography>
 
-						<Typography className="see-more">See More</Typography>
-						</Box>
-					</SwiperSlide>
-					))}
-				</Swiper>
+						<Typography
+						sx={{ fontSize: "50px", color: "#113d48", fontWeight: "700" }}
+						>
+						Tour Categories
+						</Typography>
+					</Box>
+					{/* SLIDER */}
+					<Swiper
+						modules={[Pagination, Autoplay]}
+						slidesPerView={"auto"}
+						loop={true}
+						speed={1200}
+						spaceBetween={25}
+						autoplay={{
+						delay: 2500,
+						disableOnInteraction: false,
+						}}
+						pagination={{
+						clickable: true,
+						}}
+						className="swiper swiper-initialized swiper-horizontal th-slider has-shadow categorySlider swiper-backface-hidden"
+						breakpoints={{
+						0: {
+							slidesPerView: 1,
+						},
+
+						576: {
+							slidesPerView: 2,
+						},
+
+						768: {
+							slidesPerView: 3,
+						},
+
+						1200: {
+							slidesPerView: 5,
+						},
+						}}
+					>
+						{categories.map((item, index) => (
+						<SwiperSlide key={index}>
+							<Box className="category-card">
+							{/* IMAGE */}
+							<Box className="image-wrapper">
+								<img src={item.image} alt={item.title} />
+							</Box>
+
+							{/* TEXT */}
+							<Typography className="category-title">
+								{item.title}
+							</Typography>
+
+							<Typography className="see-more">See More</Typography>
+							</Box>
+						</SwiperSlide>
+						))}
+					</Swiper>
 				</Container>
 			</Box>
 			</Box>
@@ -472,13 +535,13 @@ export default function HomeHero() {
 						</Box>
 						{/* CUSTOM BUTTONS */}
 						<Box className="slider-buttons">
-						<Box className="custom-prev">
-							<ArrowBack />
-						</Box>
+							<Box className="custom-prev">
+								<ArrowBack />
+							</Box>
 
-						<Box className="custom-next">
-							<ArrowForward />
-						</Box>
+							<Box className="custom-next">
+								<ArrowForward />
+							</Box>
 						</Box>
 					</Box>
 
@@ -555,10 +618,10 @@ export default function HomeHero() {
 			</Box>
 		</Box>
 
-		<Box sx={{ width: "100%", position: "relative", py: "50px" }}>
+		<Box sx={{ width: "100%", position: "relative", pt: "50px", pb:"100px" }}>
 			<Container maxWidth="xl">
 				 <Grid className="grid-wraper">
-					<Grid sx={{position:'relative'}} item md={6} sm={6} lg={6} md={6}>
+					<Grid sx={{position:'relative'}} item md={6} sm={6} lg={6}>
 						<Box
 							component="img"
 							src="https://tourm-react.netlify.app/assets/img/normal/about_1_1.jpg"
@@ -621,7 +684,7 @@ export default function HomeHero() {
 				</Grid>
 			</Container>
 
-			<Box sx={{bottom:'0', right:'7%'}} className="shape-mockup about-shape movingX d-none d-xxl-block">
+			<Box sx={{bottom:'7%', right:'7%'}} className="shape-mockup about-shape movingX d-none d-xxl-block">
 				<Box
 					component="img"
 					src="https://tourm-react.netlify.app/assets/img/normal/about-slide-img.png"
@@ -630,6 +693,402 @@ export default function HomeHero() {
 						}}
 				/>
 			</Box>
+
+			<Box className="shape-img">
+				<Box
+					component="img"
+					src="https://tourm-react.netlify.app/assets/img/shape/shape_6.png"
+
+					sx={{
+						position:'absolute',
+						bottom:'0',
+						right:'0'
+					}}
+				/>
+			</Box>
+			<Box className="shape-img">
+				<Box
+					component="img"
+					src="https://tourm-react.netlify.app/assets/img/shape/shape_6.png"
+
+					sx={{
+						position:'absolute',
+						bottom:'0',
+					}}
+				/>
+			</Box>
+		</Box>
+					{/* <Box>
+			 <TravelFloatingIcons />
+		</Box> */}
+		<Box 
+			sx={{
+				py: "100px",
+				backgroundImage: `url("https://tourm-react.netlify.app/assets/img/bg/tour_bg_1.jpg")`,
+				backgroundSize: "cover",
+				backgroundPosition: "center",
+				backgroundRepeat: "no-repeat",
+			}}
+		> 
+			<Container maxWidth="xl">
+				<Box sx={{textAlign:'center'}}>
+					<Typography sx={{fontSize:'50px', color:'#113d48', fontFamily:'Montez'}}>
+						Best Place For You
+					</Typography>
+					<Typography variant="h4" sx={{color:'#113d48', fontSize:'50px', fontWeight:'700', mb:2}}>
+						Most Popular Tour
+					</Typography>
+					<Typography sx={{color:'#6e7070', fontSize:'17px'}}>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod <br></br> tempor incididunt ut labore et dolore magna aliqua.
+					</Typography>
+				</Box>
+
+				<Box sx={{mt:'40px'}} className="tour-area">
+					<Swiper
+						modules={[Autoplay]}
+						slidesPerView={"4"}
+						loop={true}
+						speed={1200}
+						spaceBetween={25}
+						autoplay={{
+						delay: 2500,
+						disableOnInteraction: true,
+						}}
+					
+						className="swiper swiper-initialized swiper-horizontal "
+						breakpoints={{
+						0: {
+							slidesPerView: 1,
+						},
+
+						576: {
+							slidesPerView: 2,
+						},
+
+						768: {
+							slidesPerView: 3,
+						},
+
+						1200: {
+							slidesPerView: 4,
+						},
+						}}
+					>
+						{tours.map((item, index) => (
+						<SwiperSlide key={index}>
+							<Box sx={{background:'#fff', padding:'15px', borderRadius:'10px', border:'1px solid #dedede'}} className="tour-card">
+								{/* IMAGE */}
+								<Box className="tour_img">
+									{/* <img src={item.image} alt={item.title} /> */}
+									<Box
+										component="img"
+										src={item.image}
+										sx={{
+											borderRadius:'10px',
+											width:'100%',
+											height:'300px',
+											objectFit:'cover',
+										}}
+									/>
+								</Box>
+
+								{/* TEXT */}
+
+								<Box sx={{}} className="tour-content">
+									<Typography sx={{marginTop:'15px', color:'#113d48', fontSize:'20px', fontWeight:'600'}} className="tour-title">
+										{item.title}
+									</Typography>
+
+									<Typography sx={{display:'flex', alignItems:'center', gap:'5px', mt:'10px'}} className="rating">
+										<Rating sx={{fontSize:'25px'}} name="half-rating-read" defaultValue={item.rating} precision={0.5} readOnly /> 
+										<Typography sx={{fontSize:'17px', fontWeight:'600'}} variant="span">
+											({item.rating} Rating)
+										</Typography>
+									</Typography>
+
+									<Typography sx={{mt:'10px'}} className="card-price">
+										<Typography sx={{fontSize:'20px', fontWeight:'600'}} variant="span">${item.price}</Typography>
+										<Typography sx={{color:'#6e7070', fontSize:'17px'}} variant="span">/Person</Typography>
+									</Typography>
+								</Box>
+
+								<Box sx={{display:'flex', alignItems:'center', justifyContent:'space-between', mt:'10px'}} className="tour-box">
+									<Typography
+										sx={{
+											fontSize: "18px",
+											fontWeight: 600,
+											display: "flex",
+											alignItems: "center",
+											gap: 1,
+										}}
+										>
+										<AccessTimeOutlinedIcon />
+										{item.days}
+									</Typography>
+									<Button
+										variant="contained"
+										sx={{
+											background: "#fff",
+											borderRadius: "50px",
+											px: 3,
+											py: 1,
+											fontSize: "16px",
+											textTransform: "none",
+											boxShadow: "none",
+											color:'#113d48',
+											gap: "5px",
+											border:'1px solid #dedede',
+											fontWeight:'600',
+
+											"&:hover": {
+												backgroundColor: "#1976d2", // hover color
+												boxShadow: "none",
+												color:'#fff',
+											},
+											}}
+										>
+										Explore Tours{" "}
+										
+									</Button>
+								</Box>
+								
+							</Box>
+						</SwiperSlide>
+						))}
+					</Swiper>
+				</Box>
+				
+			</Container>
+		</Box>
+		
+		<Box sx={{py: "70px"}}>
+			<Box sx={{textAlign:'center'}}>
+				<Typography sx={{fontSize:'50px', color:'#113d48', fontFamily:'Montez'}}>
+					Make Your Tour More Pleasure
+				</Typography>
+				<Typography variant="h4" sx={{color:'#113d48', fontSize:'50px', fontWeight:'700', mb:2}}>
+					Recent Gallery
+				</Typography>
+			</Box>
+
+			<Container maxWidth="xl" sx={{marginTop:'40px'}}>
+				<Grid container spacing={3} justifyContent="center">
+					{/* 1st */}
+					<Grid item xs={12} md={6} lg={2}>
+						<Box sx={{ mt: "90px" }}>
+						<img
+							src="https://tourm-react.netlify.app/assets/img/gallery/gallery_1_1.jpg"
+							alt=""
+							style={imgStyle}
+						/>
+						</Box>
+					</Grid>
+
+					{/* 2nd */}
+					<Grid item xs={12} md={6} lg={2}>
+						<Box sx={{display:'grid'}}>
+						<img
+							src="https://tourm-react.netlify.app/assets/img/gallery/gallery_1_2.jpg"
+							alt=""
+							style={{ ...imgStyle, marginBottom: "24px" }}
+						/>
+
+						<img
+							src="https://tourm-react.netlify.app/assets/img/gallery/gallery_1_3.jpg"
+							alt=""
+							style={imgStyle}
+						/>
+						</Box>
+					</Grid>
+
+					{/* Center */}
+					<Grid item xs={12} md={6} lg={2}>
+						<img
+						src="https://tourm-react.netlify.app/assets/img/gallery/gallery_1_4.jpg"
+						alt=""
+						style={{
+							width: "100%",
+							height: "465px",
+							objectFit: "cover",
+							borderRadius: "30px",
+						}}
+						/>
+					</Grid>
+
+					{/* 4th */}
+					<Grid item xs={12} md={6} lg={2}>
+						<Box sx={{display:'grid'}}>
+						<img
+							src="https://tourm-react.netlify.app/assets/img/gallery/gallery_1_5.jpg"
+							alt=""
+							style={{ ...imgStyle, marginBottom: "24px" }}
+						/>
+
+						<img
+							src="https://tourm-react.netlify.app/assets/img/gallery/gallery_1_6.jpg"
+							alt=""
+							style={imgStyle}
+						/>
+						</Box>
+					</Grid>
+
+					{/* Last */}
+					<Grid item xs={12} md={6} lg={2}>
+						<Box sx={{ mt: "90px" }}>
+						<img
+							src="https://tourm-react.netlify.app/assets/img/gallery/gallery_1_7.jpg"
+							alt=""
+							style={imgStyle}
+						/>
+						</Box>
+					</Grid>
+				</Grid>
+			</Container>
+
+			
+
+		</Box>
+
+		<Box sx={{py: "70px", position:'relative'}} className="counter-area space">
+			<Container maxWidth="xl" className="shape-mockup-wrap">
+
+				<Box container spacing={3} className="grid-for">
+
+					{/* Item 1 */}
+					<Box className="counter-card-wrap">
+						<Box className="counter-card">
+
+							<Box className="counter-shape">
+								<span></span>
+							</Box>
+
+							<Box className="media-body">
+								<Typography className="box-number">
+								<span>12</span>
+								</Typography>
+
+								<Typography className="counter-title">
+								Years Experience
+								</Typography>
+							</Box>
+
+						</Box>
+					</Box>
+
+					{/* Item 2 */}
+					<Box className="counter-card-wrap">
+						<Box className="counter-card">
+
+							<Box className="counter-shape">
+								<span></span>
+							</Box>
+
+							<Box className="media-body">
+								<Typography className="box-number">
+								<span>97</span>%
+								</Typography>
+
+								<Typography className="counter-title">
+								Retention Rate
+								</Typography>
+							</Box>
+
+						</Box>
+					</Box>
+
+					{/* Item 3 */}
+					<Box className="counter-card-wrap">
+						<Box className="counter-card">
+
+							<Box className="counter-shape">
+								<span></span>
+							</Box>
+
+							<Box className="media-body">
+								<Typography className="box-number">
+								<span>8</span>k
+								</Typography>
+
+								<Typography className="counter-title">
+								Tour Completed
+								</Typography>
+							</Box>
+
+						</Box>
+					</Box>
+
+					{/* Item 4 */}
+					<Box className="counter-card-wrap">
+						<Box className="counter-card">
+
+							<Box className="counter-shape">
+								<span></span>
+							</Box>
+
+							<Box className="media-body">
+								<Typography className="box-number">
+								<span>19</span>k
+								</Typography>
+
+								<Typography className="counter-title">
+								Happy Travellers
+								</Typography>
+							</Box>
+
+						</Box>
+					</Box>
+
+				</Box>
+
+			</Container>
+
+			<Box className="shape-img">
+				<Box
+					component="img"
+					src="https://tourm-react.netlify.app/assets/img/shape/shape_6.png"
+
+					sx={{
+						position:'absolute',
+						bottom:'0'
+					}}
+				/>
+			</Box>
+			<Box className="shape-img">
+				<Box
+					component="img"
+					src="https://tourm-react.netlify.app/assets/img/shape/shape_6.png"
+
+					sx={{
+						position:'absolute',
+						bottom:'0',
+						right:'0'
+					}}
+				/>
+			</Box>
+		</Box>
+
+		<Box 
+			sx={{
+				py: "70px",
+				backgroundImage: `url("https://tourm-react.netlify.app/assets/img/bg/tour_bg_1.jpg")`,
+				backgroundSize: "cover",
+				backgroundPosition: "center",
+				backgroundRepeat: "no-repeat",
+			}}
+		> 
+			<Container maxWidth="xl">
+				<Box sx={{mt:'0px'}} className="tour-area">
+					<Team />
+				</Box>
+			</Container>
+		</Box>
+
+		<Box>
+			<Testimonial />
+		</Box>
+
+		<Box>
+			<Blog />
 		</Box>
     </>
   );
