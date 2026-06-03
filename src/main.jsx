@@ -7,6 +7,8 @@ import routes from './routes/index.routes';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
+import Grid from "@mui/material/Grid";
+
 import theme from './theme';
 import './index.css'
 import '@fontsource/poppins';

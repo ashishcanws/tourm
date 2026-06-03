@@ -1,18 +1,8 @@
-import {
-  Box,
-  Typography,
-  Button,
-  Stack,
-  Select,
-  MenuItem,
-  FormControl,
-  Container,
-  Grid,
-  Rating,
-  IconButton,
-} from "@mui/material";
+import {Box, Typography, Button, Stack, Select, MenuItem, FormControl, Container, Grid, Rating, IconButton,} from "@mui/material";
+import { useState } from "react";
 
 import { ArrowForward, ArrowBack } from "@mui/icons-material";
+
 
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
@@ -35,7 +25,7 @@ import "swiper/css/navigation";
 import Team from "../../components/Team";
 import Testimonial from '../../components/Testimonial';
 import Blog from '../../components/Blog';
-import TravelFloatingIcons from "../../components/TravelFloatingIcons";
+import Categoryes from './../../components/Categoryes';
 
 
 const slides = [
@@ -44,53 +34,53 @@ const slides = [
   "https://tourm-react.netlify.app/assets/img/hero/hero_bg_1_3.jpg",
 ];
 
-const categories = [
-  {
-    image:
-      "https://tourm-react.netlify.app/assets/img/category/category_1_1.jpg",
-    title: "Cruises",
-  },
-  {
-    image:
-      "https://tourm-react.netlify.app/assets/img/category/category_1_2.jpg",
-    title: "Hiking",
-  },
-  {
-    image:
-      "https://tourm-react.netlify.app/assets/img/category/category_1_3.jpg",
-    title: "Airbirds",
-  },
-  {
-    image:
-      "https://tourm-react.netlify.app/assets/img/category/category_1_4.jpg",
-    title: "Wildlife",
-  },
-  {
-    image:
-      "https://tourm-react.netlify.app/assets/img/category/category_1_5.jpg",
-    title: "Walking",
-  },
-  {
-    image:
-      "https://tourm-react.netlify.app/assets/img/category/category_1_3.jpg",
-    title: "Adventure",
-  },
-  {
-    image:
-      "https://tourm-react.netlify.app/assets/img/category/category_1_1.jpg",
-    title: "Cruises",
-  },
-  {
-    image:
-      "https://tourm-react.netlify.app/assets/img/category/category_1_2.jpg",
-    title: "Hiking",
-  },
-  {
-    image:
-      "https://tourm-react.netlify.app/assets/img/category/category_1_3.jpg",
-    title: "Airbirds",
-  },
-];
+// const categories = [
+//   {
+//     image:
+//       "https://tourm-react.netlify.app/assets/img/category/category_1_1.jpg",
+//     title: "Cruises",
+//   },
+//   {
+//     image:
+//       "https://tourm-react.netlify.app/assets/img/category/category_1_2.jpg",
+//     title: "Hiking",
+//   },
+//   {
+//     image:
+//       "https://tourm-react.netlify.app/assets/img/category/category_1_3.jpg",
+//     title: "Airbirds",
+//   },
+//   {
+//     image:
+//       "https://tourm-react.netlify.app/assets/img/category/category_1_4.jpg",
+//     title: "Wildlife",
+//   },
+//   {
+//     image:
+//       "https://tourm-react.netlify.app/assets/img/category/category_1_5.jpg",
+//     title: "Walking",
+//   },
+//   {
+//     image:
+//       "https://tourm-react.netlify.app/assets/img/category/category_1_3.jpg",
+//     title: "Adventure",
+//   },
+//   {
+//     image:
+//       "https://tourm-react.netlify.app/assets/img/category/category_1_1.jpg",
+//     title: "Cruises",
+//   },
+//   {
+//     image:
+//       "https://tourm-react.netlify.app/assets/img/category/category_1_2.jpg",
+//     title: "Hiking",
+//   },
+//   {
+//     image:
+//       "https://tourm-react.netlify.app/assets/img/category/category_1_3.jpg",
+//     title: "Airbirds",
+//   },
+// ];
 
 const destinations = [
   {
@@ -178,8 +168,8 @@ const imgStyle = {
 };
 
 
-
 export default function HomeHero() {
+
   return (
     <>
       	<Box sx={{ width: "100%", position: "relative" }}>
@@ -426,84 +416,15 @@ export default function HomeHero() {
 			</Box>
       	</Box>
 
-      	<Box sx={{ width: "100%", position: "relative", py: "50px" }}>
-			<Box sx={{ margin: "0 auto" }}>
-			<Box className="category-sections">
-				<Container maxWidth="">
-					{/* HEADING */}
-					<Box sx={{ margin: "0 auto", mb: "50px", textAlign: "center" }}>
-						<Typography
-						sx={{
-							fontSize: "50px",
-							fontFamily: "Montez",
-							mb: 1,
-							color: "#113d48",
-						}}
-						>
-						Get unforgettable pleasure with us
-						</Typography>
+		{/* <Box>
+			<button onClick={toggleDirection}>
+				{rtl ? "Switch to LTR" : "Switch to RTL"}
+			</button>
+		</Box> */}
 
-						<Typography
-						sx={{ fontSize: "50px", color: "#113d48", fontWeight: "700" }}
-						>
-						Tour Categories
-						</Typography>
-					</Box>
-					{/* SLIDER */}
-					<Swiper
-						modules={[Pagination, Autoplay]}
-						slidesPerView={"auto"}
-						loop={true}
-						speed={1200}
-						spaceBetween={25}
-						autoplay={{
-						delay: 2500,
-						disableOnInteraction: false,
-						}}
-						pagination={{
-						clickable: true,
-						}}
-						className="swiper swiper-initialized swiper-horizontal th-slider has-shadow categorySlider swiper-backface-hidden"
-						breakpoints={{
-						0: {
-							slidesPerView: 1,
-						},
-
-						576: {
-							slidesPerView: 2,
-						},
-
-						768: {
-							slidesPerView: 3,
-						},
-
-						1200: {
-							slidesPerView: 5,
-						},
-						}}
-					>
-						{categories.map((item, index) => (
-						<SwiperSlide key={index}>
-							<Box className="category-card">
-							{/* IMAGE */}
-							<Box className="image-wrapper">
-								<img src={item.image} alt={item.title} />
-							</Box>
-
-							{/* TEXT */}
-							<Typography className="category-title">
-								{item.title}
-							</Typography>
-
-							<Typography className="see-more">See More</Typography>
-							</Box>
-						</SwiperSlide>
-						))}
-					</Swiper>
-				</Container>
-			</Box>
-			</Box>
-      	</Box>
+      	<Box>
+			<Categoryes />
+		</Box>
 
       	<Box sx={{ width: "100%", position: "relative", py: "50px" }}>
 			<Box sx={{ margin: "0 auto" }}>
@@ -565,21 +486,21 @@ export default function HomeHero() {
 						clickable: true,
 						}}
 						breakpoints={{
-						0: {
-							slidesPerView: 1,
-						},
+							0: {
+								slidesPerView: 1,
+							},
 
-						600: {
-							slidesPerView: 2,
-						},
+							600: {
+								slidesPerView: 2,
+							},
 
-						900: {
-							slidesPerView: 3,
-						},
+							900: {
+								slidesPerView: 3,
+							},
 
-						1200: {
-							slidesPerView: 4,
-						},
+							1200: {
+								slidesPerView: 4,
+							},
 						}}
 						className="travelSlider"
 					>
@@ -698,7 +619,6 @@ export default function HomeHero() {
 				<Box
 					component="img"
 					src="https://tourm-react.netlify.app/assets/img/shape/shape_6.png"
-
 					sx={{
 						position:'absolute',
 						bottom:'0',

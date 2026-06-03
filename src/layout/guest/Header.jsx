@@ -1,12 +1,30 @@
 import React from "react";
 import {AppBar, Toolbar, Box, Typography, Button, Container, MenuItem, Select, Menu,} from "@mui/material";
-
+import { useState } from "react";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 
-function Header() {
+const Header = () => {
+
+const [language, setLanguage] = useState("en");
+
+const handleLanguageChange = (event) => {
+  const lang = event.target.value;
+  setLanguage(lang);
+
+  const googleSelect = document.querySelector(".goog-te-combo");
+
+  if (googleSelect) {
+    googleSelect.value = lang;
+    googleSelect.dispatchEvent(new Event("change"));
+  }
+
+  document.documentElement.dir =
+    lang === "ar" ? "rtl" : "ltr";
+};
+
   return (
     <>
       {/* TOP HEADER */}
@@ -87,6 +105,8 @@ function Header() {
               }}
             >
               <Select
+                value={language}
+                onChange={handleLanguageChange}
                 defaultValue="Language"
                 variant="outlined"
                 size="small"
@@ -102,13 +122,16 @@ function Header() {
 
                   "& .MuiSelect-select": {
                     py: 1,
-                    fontSize: "15px",
+                    fontSize:"15px",
                   },
                 }}
               >
-                <MenuItem value="Language">Language</MenuItem>
-                <MenuItem value="English">English</MenuItem>
-                <MenuItem value="Hindi">Hindi</MenuItem>
+                <MenuItem value="en">English</MenuItem>
+                <MenuItem value="hi">Hindi</MenuItem>
+                <MenuItem value="ar">Arabic</MenuItem>
+                <MenuItem value="fr">French</MenuItem>
+                <MenuItem value="de">German</MenuItem>
+                <MenuItem value="es">Spanish</MenuItem>
               </Select>
 
               <Typography
