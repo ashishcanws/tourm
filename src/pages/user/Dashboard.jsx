@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { supabase } from "../../supabase";
-
+// src/pages/user/Dashboard.jsx
+import { useState, useEffect } from "react";
 import {
-  Box,
-  Card,
-  Grid,
-  Typography,
+  Box, Typography, Grid, Card, Divider,
+  Skeleton, Alert, Button, Chip
+} from "@mui/material";
+import {
   Table,
   TableBody,
   TableCell,
@@ -14,324 +13,288 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+import BookOnlineOutlinedIcon from "@mui/icons-material/BookOnlineOutlined";
+import AttachMoneyOutlinedIcon from "@mui/icons-material/AttachMoneyOutlined";
+import FlightTakeoffOutlinedIcon from "@mui/icons-material/FlightTakeoffOutlined";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../../supabase";
 
-import BookOnlineIcon from "@mui/icons-material/BookOnline";
-import PendingActionsIcon from "@mui/icons-material/PendingActions";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import TourIcon from "@mui/icons-material/Tour";
-import PaymentsIcon from "@mui/icons-material/Payments";
-import PeopleIcon from "@mui/icons-material/People";
+const STATUS_CONFIG = {
+  pending: { color: "warning", label: "Pending" },
+  confirmed: { color: "success", label: "Confirmed" },
+  cancelled: { color: "error", label: "Cancelled" },
+};
 
-function Dashboard() {
-  const [stats, setStats] = useState({
-    totalBookings: 0,
-    pendingBookings: 0,
-    confirmedBookings: 0,
-    totalTours: 0,
-    totalUsers: 0,
-    totalRevenue: 0,
-  });
-
-  const [recentBookings, setRecentBookings] = useState([]);
+export default function Dashboard() {
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchDashboardData();
+    const fetchData = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+        if (!user) { navigate("/login"); return; }
+
+        const { data, error } = await supabase
+          .from("bookings")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        setBookings(data || []);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
-  const fetchDashboardData = async () => {
-    try {
-      const { data: bookings } = await supabase
-        .from("bookings")
-        .select("*");
+  // Stats calculate
+  const totalBookings = bookings.length;
+  const totalSpent = bookings.reduce((sum, b) => sum + (b.total || 0), 0);
+  const upcoming = bookings.filter((b) => b.status === "confirmed").length;
+  const completed = bookings.filter((b) => b.travel_date < new Date().toISOString().split("T")[0]).length;
 
-      const { data: tours } = await supabase
-        .from("tours")
-        .select("*");
+  const firstName = user?.user_metadata?.first_name || user?.email?.split("@")[0] || "User";
 
-      const { data: users } = await supabase
-        .from("profiles")
-        .select("*");
-
-      const pendingBookings =
-        bookings?.filter(
-          (item) =>
-            item.booking_status?.toLowerCase() === "pending"
-        ).length || 0;
-
-      const confirmedBookings =
-        bookings?.filter(
-          (item) =>
-            item.booking_status?.toLowerCase() === "confirmed"
-        ).length || 0;
-
-      const totalRevenue =
-        bookings?.filter(
-          (item) =>
-            item.booking_status?.toLowerCase() === "confirmed"
-        )
-          .reduce(
-            (sum, item) => sum + Number(item.total || 0),
-            0
-          ) || 0;
-
-      setStats({
-        totalBookings: bookings?.length || 0,
-        pendingBookings,
-        confirmedBookings,
-        totalTours: tours?.length || 0,
-        totalUsers: users?.length || 0,
-        totalRevenue,
-      });
-
-      setRecentBookings(
-        bookings
-          ?.sort(
-            (a, b) =>
-              new Date(b.created_at) -
-              new Date(a.created_at)
-          )
-          .slice(0, 5) || []
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const DashboardCard = ({
-    title,
-    value,
-    icon,
-  }) => (
-    <Card
-      sx={{
-        p: 3,
-        height: "100%",
-        borderRadius: "20px",
-        background:
-          "linear-gradient(135deg,#113d48,#1b5967)",
-        color: "#fff",
-        boxShadow: "0 10px 30px rgba(0,0,0,.12)",
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Box>
-          <Typography
-            sx={{
-              fontSize: 25,
-              opacity: 1,
-              fontWeight:700,
-            }}
-          >
-            {title}
-          </Typography>
-
-          <Typography
-            sx={{
-              fontSize: 34,
-              fontWeight: 700,
-              mt: 1,
-            }}
-          >
-            {value}
-          </Typography>
-        </Box>
-
-        <Box
-          sx={{
-            width: 60,
-            height: 60,
-            borderRadius: "16px",
-            bgcolor: "rgba(255,255,255,.15)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {icon}
-        </Box>
-      </Box>
-    </Card>
-  );
+  const stats = [
+    {
+      label: "Total Bookings",
+      value: totalBookings,
+      icon: <BookOnlineOutlinedIcon sx={{ fontSize: 32, color: "#20c5f7" }} />,
+      bg: "#E9F6F9",
+    },
+    {
+      label: "Total Spent",
+      value: `$${totalSpent.toLocaleString()}`,
+      icon: <AttachMoneyOutlinedIcon sx={{ fontSize: 32, color: "#20c5f7" }} />,
+      bg: "#E9F6F9",
+    },
+    {
+      label: "Confirmed Trips",
+      value: upcoming,
+      icon: <FlightTakeoffOutlinedIcon sx={{ fontSize: 32, color: "#20c5f7" }} />,
+      bg: "#E9F6F9",
+    },
+    {
+      label: "Completed Trips",
+      value: completed,
+      icon: <CheckCircleOutlinedIcon sx={{ fontSize: 32, color: "#20c5f7" }} />,
+      bg: "#E9F6F9",
+    },
+  ];
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography
-        sx={{
-          fontSize: "36px",
-          fontWeight: 700,
-          color: "#113d48",
-        }}
-      >
-        Dashboard
-      </Typography>
+    <Box p={3}>
+      {/* Welcome */}
+      <Box mb={4}>
+        <Typography sx={{ color: "#000", fontWeight: "700", mb: "15px" }} variant="h4" fontWeight={700} color="#113d48">
+          Welcome back, {firstName}! 👋
+        </Typography>
+        <Typography color="text.secondary" sx={{ color: "#000", fontWeight: "500", fontSize: "18px" }} mt={0.5}>
+          View all your tours and bookings here
+        </Typography>
+      </Box>
 
-      <Typography
-        sx={{
-          color: "#777",
-          mt: 1,
-          mb: 4,
-        }}
-      >
-        Welcome Back Admin 👋
-      </Typography>
+      {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
 
-      <Grid container spacing={3}>
-        <Grid item size={{xs:12, md:4}}>
-          <DashboardCard
-            title="Total Bookings"
-            value={stats.totalBookings}
-            icon={<BookOnlineIcon fontSize="large" />}
-          />
-        </Grid>
+      {/* Stats Cards */}
+      <Grid container spacing={3} mb={4}>
+        {stats.map((s) => (
+          <Grid item size={{ xs: 12, md: 3 }} sx={{ my: 4 }} key={s.label}>
+            <Card
+              elevation={0}
+              sx={{
+                p: 3,
+                borderRadius: 4,
+                border: "1px solid #eee",
+                backgroundColor: "#113d48",
+                display: "flex",
+                alignItems: "center",
+                gap: 2.5,
+                height: "100%",
+                transition: "all 0.3s ease",
 
-        <Grid item size={{xs:12, md:4}}>
-          <DashboardCard
-            title="Pending Bookings"
-            value={stats.pendingBookings}
-            icon={<PendingActionsIcon fontSize="large" />}
-          />
-        </Grid>
+                "&:hover": {
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+                  transform: "translateY(-4px)",
+                },
+              }}
+            >
+              <Box
+                sx={{
+                  width: 64,
+                  height: 64,
+                  borderRadius: "18px",
+                  bgcolor: "#E9F6F9",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  color: "#113d48",
+                }}
+              >
+                {s.icon}
+              </Box>
 
-        <Grid item size={{xs:12, md:4}}>
-          <DashboardCard
-            title="Confirmed Bookings"
-            value={stats.confirmedBookings}
-            icon={<CheckCircleIcon fontSize="large" />}
-          />
-        </Grid>
+              <Box sx={{ flex: 1 }}>
+                <Typography
+                  fontSize={13}
 
-        <Grid item size={{xs:12, md:4}}>
-          <DashboardCard
-            title="Total Tours"
-            value={stats.totalTours}
-            icon={<TourIcon fontSize="large" />}
-          />
-        </Grid>
+                  sx={{
+                    textTransform: "capitalize",
+                    letterSpacing: 0.5,
+                    mb: 0.5,
+                    color: "#fff",
+                    fontSize: "25px",
+                  }}
+                >
+                  {s.label}
+                </Typography>
 
-        <Grid item size={{xs:12, md:4}}>
-          <DashboardCard
-            title="Total Users"
-            value={stats.totalUsers}
-            icon={<PeopleIcon fontSize="large" />}
-          />
-        </Grid>
+                {loading ? (
+                  <Skeleton width={80} height={40} />
+                ) : (
+                  <Typography
+                    variant="h4"
+                    fontWeight={700}
+                    lineHeight={1}
 
-        <Grid item size={{xs:12, md:4}}>
-          <DashboardCard
-            title="Revenue"
-            value={`$${stats.totalRevenue}`}
-            icon={<PaymentsIcon fontSize="large" />}
-          />
-        </Grid>
+                    sx={{
+                      color: "#fff",
+
+                    }}
+                  >
+                    {s.value}
+                  </Typography>
+                )}
+              </Box>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
 
-      <Card
-        sx={{
-          mt: 5,
-          p: 3,
-          borderRadius: "20px",
-          border: "1px solid #eee",
-        }}
-      >
-        <Typography
-          sx={{
-            fontSize: "24px",
-            fontWeight: 700,
-            mb: 3,
-          }}
-        >
-          Recent Bookings
-        </Typography>
+      {/* Recent Bookings */}
+      <Box>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: "15px" }} >
+          <Typography variant="h4" sx={{ color: "#113d48", fontWeight: "600" }}>
+            Recent Bookings
+          </Typography>
+          <Button
+            size="small"
+            onClick={() => navigate("/user/my-bookings")}
+            sx={{ color: "#20c5f7", textTransform: "none", fontSize: "18px", fontWeight: 600 }}
+          >
+            View All →
+          </Button>
+        </Box>
 
-        <TableContainer component={Paper} elevation={0}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{fontSize:"18px"}}>
-                  <b>Tour</b>
-                </TableCell>
+        {loading ? (
+          [...Array(3)].map((_, i) => (
+            <Skeleton key={i} variant="rectangular" height={80} sx={{ mb: 1.5, borderRadius: 2 }} />
+          ))
+        ) : bookings.length === 0 ? (
+          <Card
+            elevation={0}
+            sx={{ p: 5, textAlign: "center", border: "1px solid #eee", borderRadius: 3 }}
+          >
+            <Typography color="text.secondary" mb={2}>
+              No bookings found yet
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={() => navigate("/tours")}
+              sx={{ backgroundColor: "#113d48", borderRadius: "50px", textTransform: "none" }}
+            >
+              Explore Tours
+            </Button>
+          </Card>
+        ) : (
+          bookings.slice(0, 5).map((b) => (
+            <TableContainer
+              component={Paper}
+              elevation={0}
+              sx={{
+                borderRadius: 3,
+                border: "1px solid #eee",
+                overflow: "hidden",
+              }}
+            >
+              <Table>
+                <TableHead>
+                  <TableRow
+                    sx={{
+                      backgroundColor: "#113d48",
+                    }}
+                  >
+                    <TableCell sx={{ color: "#fff", fontSize:"18px", fontWeight: 600 }}>
+                      Tour Name
+                    </TableCell>
 
-                <TableCell sx={{fontSize:"18px"}}>
-                  <b>Guests</b>
-                </TableCell>
+                    <TableCell sx={{ color: "#fff", fontSize:"18px", fontWeight: 600 }}>
+                      Travel Date
+                    </TableCell>
 
-                <TableCell sx={{fontSize:"18px"}}>
-                  <b>Travel Date</b>
-                </TableCell>
+                    <TableCell sx={{ color: "#fff", fontSize:"18px", fontWeight: 600 }}>
+                      Guests
+                    </TableCell>
 
-                <TableCell sx={{fontSize:"18px"}}>
-                  <b>Amount</b>
-                </TableCell>
+                    <TableCell sx={{ color: "#fff", fontSize:"18px", fontWeight: 600 }}>
+                      Amount
+                    </TableCell>
 
-                <TableCell sx={{fontSize:"18px"}}>
-                  <b>Status</b>
-                </TableCell>
-              </TableRow>
-            </TableHead>
+                    <TableCell sx={{ color: "#fff", fontSize:"18px", fontWeight: 600 }}>
+                      Status
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
 
-            <TableBody>
-              {recentBookings.map((booking) => (
-                <TableRow key={booking.id}>
-                  <TableCell sx={{fontSize:"16px"}}>
-                    {booking.tour_title}
-                  </TableCell>
-
-                  <TableCell sx={{fontSize:"16px"}}>
-                    {booking.guests}
-                  </TableCell>
-
-                  <TableCell sx={{fontSize:"16px"}}>
-                    {booking.travel_date}
-                  </TableCell>
-
-                  <TableCell sx={{fontSize:"16px"}}>
-                    ${booking.total}
-                  </TableCell>
-
-                  <TableCell>
-                    <Box
+                <TableBody>
+                  {bookings.slice(0, 5).map((b) => (
+                    <TableRow
+                      key={b.id}
+                      hover
                       sx={{
-                        display: "inline-block",
-                        px: 2,
-                        py: 0.5,
-                        fontSize:"16px",
-                        borderRadius: "20px",
-                        fontWeight: 600,
-                        bgcolor:
-                          booking.booking_status?.toLowerCase() ===
-                          "confirmed"
-                            ? "#e8f5e9"
-                            : booking.booking_status?.toLowerCase() ===
-                              "cancelled"
-                            ? "#ffebee"
-                            : "#fff8e1",
-                        color:
-                          booking.booking_status?.toLowerCase() ===
-                          "confirmed"
-                            ? "#2e7d32"
-                            : booking.booking_status?.toLowerCase() ===
-                              "cancelled"
-                            ? "#d32f2f"
-                            : "#ed6c02",
+                        "&:last-child td": {
+                          borderBottom: 0,
+                        },
                       }}
                     >
-                      {booking.booking_status}
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Card>
+                      <TableCell sx={{fontSize:"18px", color:"#777", fontWeight:"600"}}>{b.tour_title}</TableCell>
+
+                      <TableCell sx={{fontSize:"18px", color:"#777", fontWeight:"600"}}>{b.travel_date}</TableCell>
+
+                      <TableCell sx={{fontSize:"18px", color:"#777", fontWeight:"600"}}>
+                        {b.guests} Guest{b.guests > 1 ? "s" : ""}
+                      </TableCell>
+
+                      <TableCell sx={{ fontWeight: 600, fontSize:"18px", color: "#14a6d8" }}>
+                        ${Number(b.total || 0).toLocaleString("en-IN")}
+                      </TableCell>
+
+                      <TableCell>
+                        <Chip sx={{fontSize:"16px", color:"#fff"}}
+                          label={STATUS_CONFIG[b.status]?.label || "Pending"}
+                          color={STATUS_CONFIG[b.status]?.color || "warning"}
+                          size="small"
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          ))
+        )}
+      </Box>
     </Box>
   );
 }
-
-export default Dashboard;

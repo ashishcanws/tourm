@@ -1,25 +1,57 @@
+// src/pages/guest/TourDetails.jsx
 import { useParams, Link as RouterLink, useNavigate } from "react-router-dom";
-import { Box, Container, Typography, Grid, Rating, Button, Card, Divider, List, ListItem, ListItemIcon, ListItemText,} from "@mui/material";
-
+import {
+  Box, Container, Typography, Grid, Rating, Button,
+  Card, Divider, List, ListItem, ListItemIcon,
+  ListItemText, Skeleton, Alert
+} from "@mui/material";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutlined";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import PageBanner from "../../components/PageBanner";
-import { tours } from "../../data/tours";
+import { useTour } from "../../hooks/useTours";
 
 export default function TourDetails() {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const tour = tours.find((t) => t.slug === slug) || tours[0];
+  const { tour, loading, error } = useTour(slug);
 
-  const includes = [
-    "Airport pickup & drop-off",
-    "4-star hotel accommodation",
-    "Daily breakfast & dinner",
-    "Professional tour guide",
-    "All entrance fees",
-    "Travel insurance",
-  ];
+  if (loading) {
+    return (
+      <>
+        <PageBanner title="Tour Details" />
+        <Box sx={{ py: "80px" }}>
+          <Container maxWidth="xl">
+            <Grid container spacing={4}>
+              <Grid item xs={12} md={8}>
+                <Skeleton variant="rectangular" height={500} sx={{ borderRadius: "20px" }} />
+                <Skeleton width="60%" height={50} sx={{ mt: 3 }} />
+                <Skeleton width="90%" sx={{ mt: 1 }} />
+                <Skeleton width="80%" sx={{ mt: 1 }} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Skeleton variant="rectangular" height={400} sx={{ borderRadius: "20px" }} />
+              </Grid>
+            </Grid>
+          </Container>
+        </Box>
+      </>
+    );
+  }
+
+  if (error || !tour) {
+    return (
+      <>
+        <PageBanner title="Tour Details" />
+        <Box sx={{ py: "80px" }}>
+          <Container maxWidth="xl">
+            <Alert severity="error">Tour nahi mila. {error}</Alert>
+          </Container>
+        </Box>
+      </>
+    );
+  }
 
   return (
     <>
@@ -33,12 +65,18 @@ export default function TourDetails() {
       <Box sx={{ py: "80px", backgroundColor: "#fff" }}>
         <Container maxWidth="xl">
           <Grid container spacing={4}>
+            {/* LEFT SIDE */}
             <Grid item xs={12} md={8}>
               <Box
                 component="img"
                 src={tour.image}
                 alt={tour.title}
-                sx={{ width: "100%", height: { xs: 300, md: 500 }, objectFit: "cover", borderRadius: "20px" }}
+                sx={{
+                  width: "100%",
+                  height: { xs: 300, md: 500 },
+                  objectFit: "cover",
+                  borderRadius: "20px",
+                }}
               />
 
               <Box sx={{ mt: 4 }}>
@@ -46,9 +84,11 @@ export default function TourDetails() {
                   <FmdGoodOutlinedIcon fontSize="small" />
                   <Typography>{tour.location}</Typography>
                 </Box>
+
                 <Typography sx={{ fontSize: { xs: 30, md: 42 }, fontWeight: 700, color: "#113d48" }}>
                   {tour.title}
                 </Typography>
+
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
                   <Rating value={tour.rating} precision={0.5} readOnly />
                   <Typography sx={{ color: "#6e7070" }}>({tour.rating} / 5)</Typography>
@@ -56,41 +96,66 @@ export default function TourDetails() {
 
                 <Divider sx={{ my: 4 }} />
 
+                {/* Description */}
                 <Typography sx={{ fontSize: 28, fontWeight: 700, color: "#113d48", mb: 2 }}>
                   Tour Overview
                 </Typography>
-                <Typography sx={{ color: "#6e7070", lineHeight: 1.9, mb: 2 }}>
-                  Experience an unforgettable {tour.days}-day journey through {tour.location}.
-                  Our expertly crafted itinerary blends iconic landmarks, cultural immersion, and
-                  leisure time, ensuring you get the most out of every moment. From sunrise vistas
-                  to candle-lit dinners, this tour is designed to delight.
-                </Typography>
                 <Typography sx={{ color: "#6e7070", lineHeight: 1.9 }}>
-                  Travel with seasoned local guides, stay in carefully selected accommodations,
-                  and enjoy seamless logistics throughout your trip.
+                  {tour.description ||
+                    `Experience an unforgettable ${tour.days}-day journey through ${tour.location}.`}
                 </Typography>
 
-                <Typography sx={{ fontSize: 28, fontWeight: 700, color: "#113d48", mt: 5, mb: 2 }}>
-                  What's Included
-                </Typography>
-                <Grid container>
-                  {includes.map((item) => (
-                    <Grid item xs={12} sm={6} key={item}>
-                      <ListItem disableGutters>
-                        <ListItemIcon sx={{ minWidth: 36 }}>
-                          
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={item}
-                          primaryTypographyProps={{ sx: { color: "#113d48" } }}
-                        />
-                      </ListItem>
+                {/* Highlights */}
+                {tour.highlights?.length > 0 && (
+                  <>
+                    <Typography sx={{ fontSize: 28, fontWeight: 700, color: "#113d48", mt: 5, mb: 2 }}>
+                      Highlights
+                    </Typography>
+                    <Grid container>
+                      {tour.highlights.map((item) => (
+                        <Grid item xs={12} sm={6} key={item}>
+                          <ListItem disableGutters>
+                            <ListItemIcon sx={{ minWidth: 36 }}>
+                              <CheckCircleOutlineIcon sx={{ color: "#14a6d8" }} />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={item}
+                              primaryTypographyProps={{ sx: { color: "#113d48" } }}
+                            />
+                          </ListItem>
+                        </Grid>
+                      ))}
                     </Grid>
-                  ))}
-                </Grid>
+                  </>
+                )}
+
+                {/* Included */}
+                {tour.included?.length > 0 && (
+                  <>
+                    <Typography sx={{ fontSize: 28, fontWeight: 700, color: "#113d48", mt: 5, mb: 2 }}>
+                      What's Included
+                    </Typography>
+                    <Grid container>
+                      {tour.included.map((item) => (
+                        <Grid item xs={12} sm={6} key={item}>
+                          <ListItem disableGutters>
+                            <ListItemIcon sx={{ minWidth: 36 }}>
+                              <CheckCircleOutlineIcon sx={{ color: "#14a6d8" }} />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={item}
+                              primaryTypographyProps={{ sx: { color: "#113d48" } }}
+                            />
+                          </ListItem>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </>
+                )}
               </Box>
             </Grid>
 
+            {/* RIGHT SIDE - Sticky Card */}
             <Grid item xs={12} md={4}>
               <Card
                 elevation={0}
@@ -123,7 +188,7 @@ export default function TourDetails() {
                     <ListItemIcon sx={{ minWidth: 32 }}>
                       <GroupsOutlinedIcon sx={{ color: "#14a6d8" }} />
                     </ListItemIcon>
-                    <ListItemText primary="Max Group Size: 20" />
+                    <ListItemText primary={`Max Group: ${tour.max_group_size || 20} people`} />
                   </ListItem>
                   <ListItem disableGutters>
                     <ListItemIcon sx={{ minWidth: 32 }}>
@@ -150,6 +215,7 @@ export default function TourDetails() {
                 >
                   Book This Tour
                 </Button>
+
                 <Button
                   component={RouterLink}
                   to="/contact"

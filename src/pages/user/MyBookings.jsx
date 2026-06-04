@@ -1,180 +1,214 @@
-import { useEffect, useState } from "react";
-import { supabase } from "../../supabase";
+// src/pages/user/MyBookings.jsx
+import { useState, useEffect } from "react";
 import {
-  Box,
-  Card,
-  Grid,
-  Divider,
-  Typography,
+  Box, Typography, Card, Grid, Chip, Divider,
+  Skeleton, Alert, Button
 } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
+import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../../supabase";
+
+const STATUS_CONFIG = {
+  pending: { color: "warning", label: "Pending" },
+  confirmed: { color: "success", label: "Confirmed" },
+  cancelled: { color: "error", label: "Cancelled" },
+};
 
 export default function MyBookings() {
   const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getBookings();
+    const fetchMyBookings = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { navigate("/login"); return; }
+
+        const { data, error } = await supabase
+          .from("bookings")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        setBookings(data || []);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMyBookings();
   }, []);
 
-  const getBookings = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    const { data } = await supabase
-      .from("bookings")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
-
-    setBookings(data || []);
-  };
+  if (loading) {
+    return (
+      <Box p={3}>
+        <Skeleton width={200} height={40} sx={{ mb: 3 }} />
+        {[...Array(3)].map((_, i) => (
+          <Skeleton key={i} variant="rectangular" height={180}
+            sx={{ mb: 2, borderRadius: 3 }} />
+        ))}
+      </Box>
+    );
+  }
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h4" mb={3}>
-        <Box sx={{ fontSize: "35px", color: "#000", fontWeight: "700" }}>
+    <Box p={3}>
+      <Box sx={{mb:"20px"}}>
+        <Typography variant="h4" sx={{ color: "#000", fontWeight: "700", mb: "15px" }} >
           My Bookings
-        </Box>
-      </Typography>
+        </Typography>
+        <Typography color="text.secondary" sx={{ color: "#000", fontWeight: "500", fontSize: "18px" }} mt={0.5}>
+          View all your bookings in one place.
+        </Typography>
+      </Box>
 
-      <Grid container sx={{ mt: 4 }} spacing={3}>
-        {bookings.map((booking) => {
-          const status = booking.booking_status?.toLowerCase();
+      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-          return (
-            <Grid item size={{xs:12, md:4}} key={booking.id}>
-              <Card
-                sx={{
-                  p: 3,
-                  border: "1px solid #dedede",
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontSize: "25px",
-                    fontWeight: "600",
-                    color: "#000",
-                  }}
-                >
-                  {booking.tour_title}
-                </Typography>
+      {bookings.length === 0 ? (
+        <Card
+          elevation={0}
+          sx={{ p: 6, textAlign: "center", border: "1px solid #eee", borderRadius: 3 }}
+        >
+          <Typography sx={{ color: "#6e7070", fontSize: 20, mb: 2 }}>
+            You haven't made any bookings yet.
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={() => navigate("/tours")}
+            sx={{
+              backgroundColor: "#113d48", borderRadius: "50px",
+              textTransform: "none", px: 4,
+            }}
+          >
+            Explore Tours
+          </Button>
+        </Card>
+      ) : (
+        <Grid container spacing={3}>
+          {bookings.map((b) => (
+            <TableContainer
+              component={Paper}
+              elevation={0}
+              sx={{
+                borderRadius: 3,
+                border: "1px solid #eee",
+                overflow: "hidden",
+              }}
+            >
+              <Table>
+                <TableHead>
+                  <TableRow sx={{ backgroundColor: "#113d48" }}>
+                    <TableCell sx={{ color: "#fff", fontSize:"18px", fontWeight: 600 }}>
+                      Tour Name
+                    </TableCell>
 
-                <Divider sx={{ my: 2 }} />
+                    <TableCell sx={{ color: "#fff", fontSize:"18px", fontWeight: 600 }}>
+                      Travel Date
+                    </TableCell>
 
-                <Typography
-                  sx={{
-                    fontSize: "16px",
-                    fontWeight: "500",
-                    color: "#777",
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Box component="span">
-                    <b>Guests:</b>
-                  </Box>
+                    <TableCell sx={{ color: "#fff", fontSize:"18px", fontWeight: 600 }}>
+                      Guests
+                    </TableCell>
 
-                  <Box
-                    component="span"
-                    sx={{ color: "#000", fontWeight: "700", fontSize:"16px" }}
-                  >
-                    {booking.guests}
-                  </Box>
-                </Typography>
+                    <TableCell sx={{ color: "#fff", fontSize:"18px", fontWeight: 600 }}>
+                      Special Request
+                    </TableCell>
 
-                <Divider sx={{ my: 2 }} />
+                    <TableCell sx={{ color: "#fff", fontSize:"18px", fontWeight: 600 }}>
+                      Total Amount
+                    </TableCell>
 
-                <Typography
-                  sx={{
-                    fontSize: "16px",
-                    fontWeight: "500",
-                    color: "#777",
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Box component="span">
-                    <b>Date:</b>
-                  </Box>
+                    <TableCell sx={{ color: "#fff", fontSize:"18px", fontWeight: 600 }}>
+                      Status
+                    </TableCell>
 
-                  <Box
-                    component="span"
-                    sx={{ color: "#000", fontWeight: "700", fontSize:"16px" }}
-                  >
-                    {booking.travel_date}
-                  </Box>
-                </Typography>
+                    <TableCell sx={{ color: "#fff", fontSize:"18px", fontWeight: 600 }}>
+                      Action
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
 
-                <Divider sx={{ my: 2 }} />
+                <TableBody>
+                  {bookings.map((b) => (
+                    <TableRow key={b.id} hover>
+                      <TableCell sx={{fontSize:"18px", fontWeight: 600 }}>
+                        {b.tour_title}
+                      </TableCell>
 
-                <Typography
-                  sx={{
-                    fontSize: "16px",
-                    fontWeight: "500",
-                    color: "#777",
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Box component="span">
-                    <b>Total:</b>
-                  </Box>
+                      <TableCell sx={{fontSize:"18px", fontWeight: 600}}>
+                        {b.travel_date}
+                      </TableCell>
 
-                  <Box
-                    component="span"
-                    sx={{ color: "#000", fontWeight: "700", fontSize:"16px" }}
-                  >
-                    ${booking.total}
-                  </Box>
-                </Typography>
+                      <TableCell sx={{fontSize:"18px", fontWeight: 600}}>
+                        {b.guests}
+                      </TableCell>
 
-                <Divider sx={{ my: 2 }} />
+                      <TableCell sx={{fontSize:"18px", fontWeight: 600}}>
+                        {b.special_request || "-"}
+                      </TableCell>
 
-                <Typography
-                  sx={{
-                    fontSize: "16px",
-                    fontWeight: "500",
-                    color: "#777",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box component="span">
-                    <b>Booking Status:</b>
-                  </Box>
+                      <TableCell
+                        sx={{
+                          fontWeight: 700,
+                          fontSize:"18px",
+                          color: "#14a6d8",
+                        }}
+                      >
+                        ${Number(b.total || 0).toLocaleString("en-IN")}
+                      </TableCell>
 
-                  <Box
-                    component="span"
-                    sx={{
-                      px: 2,
-                      py: 0.5,
-                      borderRadius: "20px",
-                      fontSize:"16px",
-                      fontWeight: 700,
-                      textTransform: "capitalize",
-                      bgcolor:
-                        status === "confirmed"
-                          ? "#e8f5e9"
-                          : status === "cancelled"
-                          ? "#ffebee"
-                          : "#fff8e1",
-                      color:
-                        status === "confirmed"
-                          ? "#2e7d32"
-                          : status === "cancelled"
-                          ? "#d32f2f"
-                          : "#ed6c02",
-                    }}
-                  >
-                    {booking.booking_status}
-                  </Box>
-                </Typography>
-              </Card>
-            </Grid>
-          );
-        })}
-      </Grid>
+                      <TableCell>
+                        <Chip sx={{fontSize:"16px", fontWeight:"700"}}
+                          label={STATUS_CONFIG[b.status]?.label || "Pending"}
+                          color={STATUS_CONFIG[b.status]?.color || "warning"}
+                          size="small"
+                        />
+                      </TableCell>
+
+                      <TableCell>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          onClick={() => navigate(`/tours/${b.tour_slug}`)}
+                          sx={{
+                            borderColor: "#113d48",
+                            color: "#113d48",
+                            fontSize:"16px",
+                            fontWeight:"700",
+                            textTransform: "none",
+                            borderRadius: "20px",
+                            "&:hover": {
+                              backgroundColor: "#113d48",
+                              color: "#fff",
+                            },
+                          }}
+                        >
+                          View Tour
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          ))}
+        </Grid>
+      )}
     </Box>
   );
 }

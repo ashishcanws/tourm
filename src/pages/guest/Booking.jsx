@@ -10,27 +10,37 @@ import {
   Card,
   Divider,
   MenuItem,
+  Skeleton,
 } from "@mui/material";
 import PageBanner from "../../components/PageBanner";
-import { tours } from "../../data/tours";
+// import { tours } from "../../data/tours";
 import { supabase } from "../../supabase";
+
+import { useTour } from "../../hooks/useTours";
 
 export default function Booking() {
   const { slug } = useParams();
-  const tour = tours.find((t) => t.slug === slug) || tours[0];
+  const { tour, loading } = useTour(slug);   // ← Supabase se
 
   const [guests, setGuests] = useState(2);
   const [submitted, setSubmitted] = useState(false);
   const today = new Date().toISOString().split("T")[0];
-
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    travelDate: today,
-    specialRequest: "",
+    firstName: "", lastName: "", email: "",
+    phone: "", travelDate: today, specialRequest: "",
   });
+
+  // Loading state
+  if (loading) return (
+    <>
+      <PageBanner title="Book Your Tour" />
+      <Box sx={{ py: "80px" }}>
+        <Container maxWidth="xl">
+          <Skeleton variant="rectangular" height={400} sx={{ borderRadius: "20px" }} />
+        </Container>
+      </Box>
+    </>
+  );
 
 
   const total = tour.price * guests;
