@@ -77,14 +77,15 @@ export default function AddTour() {
 
   // Validation
   const validate = () => {
-    if (!form.title.trim()) return "Title required hai";
-    if (!form.slug.trim()) return "Slug required hai";
-    if (!form.location.trim()) return "Location required hai";
-    if (!form.price || Number(form.price) <= 0) return "Valid price daalo";
-    if (!form.days || Number(form.days) <= 0) return "Valid days daalo";
-    if (!imageFile) return "Image upload karo";
-    return null;
-  };
+  if (!form.title.trim()) return "Title is required";
+  if (!form.slug.trim()) return "Slug is required";
+  if (!form.location.trim()) return "Location is required";
+  if (!form.price || Number(form.price) <= 0) return "Invalid price";
+  if (!form.days || Number(form.days) <= 0) return "Invalid duration";
+  if (!imageFile) return "Cover image is required";
+
+  return null;
+};
 
   const handleSubmit = async () => {
     const err = validate();
@@ -134,7 +135,7 @@ export default function AddTour() {
 
       navigate("/admin/tours");
     } catch (err) {
-      setError(err.message || "Tour create nahi hua");
+      setError(err.message || "Failed to create tour.");
     } finally {
       setLoading(false);
     }
@@ -172,36 +173,36 @@ export default function AddTour() {
         <Grid container spacing={3}>
 
           {/* ── Basic Info ── */}
-          <Grid item xs={12}>
-            <Typography variant="h6" fontWeight={700} color="#113d48">
+          <Grid item size={{xs:12}}>
+            <Typography variant="h5" sx={{color:"#000", fontWeight:700}}>
               Basic Information
             </Typography>
             <Divider sx={{ mt: 1 }} />
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item size={{xs:12, md:3}}>
             <TextField
               fullWidth label="Tour Title *" name="title"
               value={form.title} onChange={handleChange}
             />
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item size={{xs:12, md:3}}>
             <TextField
               fullWidth label="Slug *" name="slug"
               value={form.slug} onChange={handleChange}
-              helperText="Auto-generate hota hai title se"
+              helperText="Automatically generated from the title."
             />
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item size={{xs:12, md:3}}>
             <TextField
               fullWidth label="Location *" name="location"
               value={form.location} onChange={handleChange}
             />
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item size={{xs:12, md:3}}>
             <TextField
               select fullWidth label="Difficulty" name="difficulty"
               value={form.difficulty} onChange={handleChange}
@@ -212,28 +213,28 @@ export default function AddTour() {
             </TextField>
           </Grid>
 
-          <Grid item xs={12} md={3}>
+          <Grid item size={{xs:12, md:3}}>
             <TextField
               fullWidth label="Price (USD) *" name="price"
               type="number" value={form.price} onChange={handleChange}
             />
           </Grid>
 
-          <Grid item xs={12} md={3}>
+          <Grid item size={{xs:12, md:3}}>
             <TextField
               fullWidth label="Duration (Days) *" name="days"
               type="number" value={form.days} onChange={handleChange}
             />
           </Grid>
 
-          <Grid item xs={12} md={3}>
+          <Grid item size={{xs:12, md:3}}>
             <TextField
               fullWidth label="Max Group Size" name="max_group_size"
               type="number" value={form.max_group_size} onChange={handleChange}
             />
           </Grid>
 
-          <Grid item xs={12} md={3}>
+          <Grid item size={{xs:12, md:3}}>
             <TextField
               fullWidth label="Rating" name="rating"
               type="number" value={form.rating} onChange={handleChange}
@@ -242,8 +243,8 @@ export default function AddTour() {
           </Grid>
 
           {/* ── Description ── */}
-          <Grid item xs={12}>
-            <Typography variant="h6" fontWeight={700} color="#113d48" mt={1}>
+          <Grid item size={{xs:12, md:12}}>
+            <Typography variant="h5" sx={{color:"#000", fontWeight:700}}>
               Description
             </Typography>
             <Divider sx={{ mt: 1, mb: 2 }} />
@@ -254,8 +255,8 @@ export default function AddTour() {
           </Grid>
 
           {/* ── Image ── */}
-          <Grid item xs={12}>
-            <Typography variant="h6" fontWeight={700} color="#113d48" mt={1}>
+          <Grid item size={{xs:12, md:12}}>
+            <Typography variant="h5" sx={{color:"#000", fontWeight:700}}>
               Cover Image *
             </Typography>
             <Divider sx={{ mt: 1, mb: 2 }} />
@@ -268,7 +269,7 @@ export default function AddTour() {
                 />
               )}
               <Button variant="outlined" component="label" startIcon={<CloudUploadIcon />}>
-                {imagePreview ? "Image Change Karo" : "Image Upload Karo"}
+                {imagePreview ? "Change Image" : "Upload Image"}
                 <input type="file" accept="image/*" hidden onChange={handleImage} />
               </Button>
               {imagePreview && <Chip label="Selected" color="success" size="small" />}
@@ -276,15 +277,15 @@ export default function AddTour() {
           </Grid>
 
           {/* ── Array Fields ── */}
-          <Grid item xs={12}>
-            <Typography variant="h6" fontWeight={700} color="#113d48" mt={1}>
+          <Grid item size={{xs:12, md:12}}>
+            <Typography variant="h5" sx={{color:"#000", fontWeight:700}}>
               Tour Details
             </Typography>
             <Divider sx={{ mt: 1, mb: 2 }} />
           </Grid>
 
           {/* Highlights */}
-          <Grid item xs={12} md={4}>
+          <Grid item size={{xs:12, md:4}}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
               <Typography fontWeight={600}>Highlights</Typography>
               <Button size="small" startIcon={<AddIcon />} onClick={() => addItem("highlights")}>
@@ -292,13 +293,13 @@ export default function AddTour() {
               </Button>
             </Box>
             {form.highlights.map((item, i) => (
-              <Box key={i} display="flex" gap={1} mb={1}>
+              <Box key={i} display="flex" gap={1} mb={1} sx={{position:"relative", mb:2}}>
                 <TextField
                   fullWidth size="small" placeholder="e.g. Sunrise view"
                   value={item}
                   onChange={(e) => handleArrayChange("highlights", i, e.target.value)}
                 />
-                <IconButton color="error" onClick={() => removeItem("highlights", i)}
+                <IconButton sx={{position:"absolute", right:"0"}} color="error" onClick={() => removeItem("highlights", i)}
                   disabled={form.highlights.length === 1}>
                   <DeleteIcon fontSize="small" />
                 </IconButton>
@@ -307,7 +308,7 @@ export default function AddTour() {
           </Grid>
 
           {/* Included */}
-          <Grid item xs={12} md={4}>
+          <Grid item size={{xs:12, md:4}}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
               <Typography fontWeight={600}>Included</Typography>
               <Button size="small" startIcon={<AddIcon />} onClick={() => addItem("included")}>
@@ -315,13 +316,13 @@ export default function AddTour() {
               </Button>
             </Box>
             {form.included.map((item, i) => (
-              <Box key={i} display="flex" gap={1} mb={1}>
+              <Box key={i} display="flex" gap={1} mb={1} sx={{position:"relative", mb:2}}>
                 <TextField
                   fullWidth size="small" placeholder="e.g. Hotel stay"
                   value={item}
                   onChange={(e) => handleArrayChange("included", i, e.target.value)}
                 />
-                <IconButton color="error" onClick={() => removeItem("included", i)}
+                <IconButton sx={{position:"absolute", right:"0"}} color="error" onClick={() => removeItem("included", i)}
                   disabled={form.included.length === 1}>
                   <DeleteIcon fontSize="small" />
                 </IconButton>
@@ -330,21 +331,21 @@ export default function AddTour() {
           </Grid>
 
           {/* Excluded */}
-          <Grid item xs={12} md={4}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+          <Grid item size={{xs:12, md:4}}>
+            <Box sx={{position:"relative"}} mb={1}>
               <Typography fontWeight={600}>Excluded</Typography>
               <Button size="small" startIcon={<AddIcon />} onClick={() => addItem("excluded")}>
                 Add
               </Button>
             </Box>
             {form.excluded.map((item, i) => (
-              <Box key={i} display="flex" gap={1} mb={1}>
+              <Box key={i} display="flex" gap={1} mb={1} sx={{position:"relative", mb:2}} mb={1}>
                 <TextField
                   fullWidth size="small" placeholder="e.g. Flights"
                   value={item}
                   onChange={(e) => handleArrayChange("excluded", i, e.target.value)}
                 />
-                <IconButton color="error" onClick={() => removeItem("excluded", i)}
+                <IconButton sx={{position:"absolute", right:"0"}} color="error" onClick={() => removeItem("excluded", i)}
                   disabled={form.excluded.length === 1}>
                   <DeleteIcon fontSize="small" />
                 </IconButton>
@@ -354,7 +355,7 @@ export default function AddTour() {
         </Grid>
 
         {/* Submit */}
-        <Box display="flex" justifyContent="flex-end" gap={2} mt={4}>
+        <Box sx={{display:"flex", alignItems:"center", justifyContent:"end", gap:2, mt:4}}>
           <Button variant="outlined" onClick={() => navigate("/admin/tours")}>
             Cancel
           </Button>
@@ -365,7 +366,7 @@ export default function AddTour() {
             disabled={loading}
             sx={{ minWidth: 140, backgroundColor: "#113d48" }}
           >
-            {loading ? <CircularProgress size={22} color="inherit" /> : "Tour Create Karo"}
+            {loading ? <CircularProgress size={22} color="inherit" /> : "Create Tour"}
           </Button>
         </Box>
       </Paper>

@@ -218,7 +218,7 @@ export default function Dashboard() {
             </Button>
           </Card>
         ) : (
-          bookings.slice(0, 5).map((b) => (
+          
             <TableContainer
               component={Paper}
               elevation={0}
@@ -292,7 +292,7 @@ export default function Dashboard() {
                 </TableBody>
               </Table>
             </TableContainer>
-          ))
+         
         )}
       </Box>
     </Box>

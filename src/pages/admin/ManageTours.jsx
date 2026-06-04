@@ -55,12 +55,12 @@ export default function ManageTours() {
   return (
     <Box p={3}>
       {/* Header */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+      <Box sx={{display:"flex", justifyContent:"space-between", alignItems:"center", mb:4}}>
         <Box>
-          <Typography variant="h5" fontWeight={700} color="#113d48">
+          <Typography variant="h4" sx={{ color: "#000", fontWeight: "700" }}>
             Manage Tours
           </Typography>
-          <Typography color="text.secondary">{tours.length} tours total</Typography>
+          <Typography color="text.secondary" sx={{ color: "#000", fontWeight: "500", fontSize: "18px" }} mt={0.5}>{tours.length} tours total</Typography>
         </Box>
         <Button
           variant="contained"
@@ -97,110 +97,231 @@ export default function ManageTours() {
       <TableContainer
         component={Paper}
         elevation={0}
-        sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2 }}
+        sx={{
+          borderRadius: 3,
+          border: "1px solid #eee",
+          overflowX: "auto",
+        }}
       >
         <Table>
-          <TableHead sx={{ bgcolor: "#f5f5f5" }}>
-            <TableRow>
-              <TableCell><b>Tour</b></TableCell>
-              <TableCell><b>Location</b></TableCell>
-              <TableCell><b>Price</b></TableCell>
-              <TableCell><b>Duration</b></TableCell>
-              <TableCell><b>Rating</b></TableCell>
-              <TableCell align="center"><b>Actions</b></TableCell>
+          <TableHead>
+            <TableRow sx={{ bgcolor: "#113d48" }}>
+              <TableCell sx={{ color: "#fff", fontSize: "18px", fontWeight: 700 }}>
+                Tour
+              </TableCell>
+
+              <TableCell sx={{ color: "#fff", fontSize: "18px", fontWeight: 700 }}>
+                Location
+              </TableCell>
+
+              <TableCell sx={{ color: "#fff", fontSize: "18px", fontWeight: 700 }}>
+                Price
+              </TableCell>
+
+              <TableCell sx={{ color: "#fff", fontSize: "18px", fontWeight: 700 }}>
+                Duration
+              </TableCell>
+
+              <TableCell
+                align="center"
+                sx={{ color: "#fff", fontSize: "18px", fontWeight: 700 }}
+              >
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {loading
-              ? [...Array(5)].map((_, i) => (
-                  <TableRow key={i}>
-                    {[...Array(6)].map((_, j) => (
-                      <TableCell key={j}><Skeleton /></TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              : filtered.length === 0
-              ? (
-                  <TableRow>
-                    <TableCell colSpan={6} align="center" sx={{ py: 5, color: "text.secondary" }}>
-                      No tours found.
+            {loading ? (
+              [...Array(5)].map((_, i) => (
+                <TableRow key={i}>
+                  {[...Array(6)].map((_, j) => (
+                    <TableCell key={j}>
+                      <Skeleton />
                     </TableCell>
-                  </TableRow>
-                )
-              : filtered.map((tour) => (
-                  <TableRow key={tour.slug} hover>
-                    <TableCell>
-                      <Box display="flex" alignItems="center" gap={2}>
-                        <Avatar
-                          src={tour.image}
-                          variant="rounded"
-                          sx={{ width: 56, height: 40 }}
-                        />
-                        <Typography fontWeight={600} fontSize={14}>
-                          {tour.title}
-                        </Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>{tour.location}</TableCell>
-                    <TableCell><b>${tour.price}</b></TableCell>
-                    <TableCell>{tour.days} days</TableCell>
-                    <TableCell>
-                      <Chip label={`⭐ ${tour.rating}`} size="small" />
-                    </TableCell>
-                    <TableCell align="center">
-                      <Tooltip title="Site pe dekho">
-                        <IconButton
-                          size="small"
-                          onClick={() => window.open(`/tours/${tour.slug}`, "_blank")}
-                        >
-                          <VisibilityIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Edit">
-                        <IconButton
-                          size="small"
-                          color="primary"
-                          onClick={() => navigate(`/admin/tours/edit/${tour.slug}`)}
-                        >
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete">
-                        <IconButton
-                          size="small"
-                          color="error"
-                          onClick={() => setDeleteDialog({ open: true, tour })}
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                  ))}
+                </TableRow>
+              ))
+            ) : filtered.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={6}
+                  align="center"
+                  sx={{
+                    py: 6,
+                    color: "text.secondary",
+                  }}
+                >
+                  No tours found
+                </TableCell>
+              </TableRow>
+            ) : (
+              filtered.map((tour) => (
+                <TableRow
+                  key={tour.slug}
+                  hover
+                  sx={{
+                    transition: "0.2s",
+                    "&:hover": {
+                      bgcolor: "#f8fbfc",
+                    },
+                  }}
+                >
+                  <TableCell>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}
+                      display="flex"
+                      alignItems="center"
+                      gap={2}
+                    >
+                      <Avatar
+                        src={tour.image}
+                        variant="rounded"
+                        sx={{
+                          width: 60,
+                          height: 42,
+                          borderRadius: 2,
+                        }}
+                      />
+
+                      <Typography
+                        sx={{
+                          fontSize: "16px",
+                          color: "#000",
+                          fontWeight: "600"
+                        }}
+                      >
+                        {tour.title}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+
+                  <TableCell sx={{
+                    fontSize: "16px",
+                    color: "#000",
+                    fontWeight: "600"
+                  }}>
+                    {tour.location}
+                  </TableCell>
+
+                  <TableCell sx={{
+                    fontSize: "16px",
+                    color: "#14a6d8",
+                    fontWeight: "600"
+                  }}>
+                    <Typography
+                      fontWeight={700}
+                      color="#14a6d8"
+                    >
+                      ${Number(tour.price || 0).toLocaleString("en-IN")}
+                    </Typography>
+                  </TableCell>
+
+                  <TableCell sx={{
+                    fontSize: "16px",
+                    color: "#000",
+                    fontWeight: "600"
+                  }}>
+                    {tour.days} Days
+                  </TableCell>
+
+
+
+                  <TableCell align="center">
+                    <Tooltip title="View Tour">
+                      <IconButton
+                        size="small"
+                        onClick={() =>
+                          window.open(
+                            `/tours/${tour.slug}`,
+                            "_blank"
+                          )
+                        }
+                      >
+                        <VisibilityIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Edit Tour">
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() =>
+                          navigate(
+                            `/admin/tours/edit/${tour.slug}`
+                          )
+                        }
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Delete Tour">
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={() =>
+                          setDeleteDialog({
+                            open: true,
+                            tour,
+                          })
+                        }
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>
 
       {/* Delete Dialog */}
-      <Dialog open={deleteDialog.open} onClose={() => setDeleteDialog({ open: false, tour: null })}>
-        <DialogTitle>Tour Delete Karo</DialogTitle>
+      <Dialog
+        open={deleteDialog.open}
+        onClose={() =>
+          setDeleteDialog({
+            open: false,
+            tour: null,
+          })
+        }
+      >
+        <DialogTitle>
+          Delete Tour
+        </DialogTitle>
+
         <DialogContent>
           <Typography>
-            Kya aap sure ho? <b>"{deleteDialog.tour?.title}"</b> permanently delete ho jaayega.
+            Are you sure you want to delete
+            <b> "{deleteDialog.tour?.title}" </b>?
+            This action cannot be undone.
           </Typography>
         </DialogContent>
+
         <DialogActions>
-          <Button onClick={() => setDeleteDialog({ open: false, tour: null })}>
+          <Button
+            onClick={() =>
+              setDeleteDialog({
+                open: false,
+                tour: null,
+              })
+            }
+          >
             Cancel
           </Button>
+
           <Button
             variant="contained"
             color="error"
             onClick={handleDelete}
             disabled={deleteLoading}
           >
-            {deleteLoading ? <CircularProgress size={20} /> : "Delete"}
+            {deleteLoading ? (
+              <CircularProgress size={20} />
+            ) : (
+              "Delete"
+            )}
           </Button>
         </DialogActions>
       </Dialog>

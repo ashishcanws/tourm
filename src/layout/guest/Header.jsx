@@ -1,40 +1,169 @@
-import React from "react";
-import {AppBar, Toolbar, Box, Typography, Button, Container, MenuItem, Select, Menu,} from "@mui/material";
-import { useState } from "react";
+import React, { useState } from "react";
+import {
+  AppBar, Toolbar, Box, Typography, Button,
+  Container, MenuItem, Select,
+} from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 
+// ── Nav config — edit here to add/remove items ──────────────────────────────
+const NAV_ITEMS = [
+  {
+    label: "Home",
+    path: "/",
+    dropdown: [
+      { label: "Home One",   path: "/" },
+      { label: "Home Two",   path: "/" },
+      { label: "Home Three", path: "/" },
+    ],
+  },
+  { label: "About Us",    path: "/about" },
+  {
+    label: "Destination",
+    path: "/destinations",
+    dropdown: [
+      { label: "All Destinations", path: "/destinations" },
+    ],
+  },
+  {
+    label: "Service",
+    path: "/tours",
+    dropdown: [
+      { label: "Tour Listing", path: "/tours" },
+      { label: "Tour Details", path: "/tours" },
+    ],
+  },
+  {
+    label: "Activities",
+    path: "/tours",
+    dropdown: [
+      { label: "All Tours", path: "/tours" },
+    ],
+  },
+  {
+    label: "Pages",
+    path: "#",
+    dropdown: [
+      { label: "Login",    path: "/login" },
+      { label: "Sign Up",  path: "/sign" },
+      { label: "Booking",  path: "/booking" },
+      { label: "Dashboard",       path: "/user/dashboard" },
+      { label: "My Bookings",     path: "/user/my-bookings" },
+      { label: "Profile",         path: "/user/profile" },
+      { label: "Change Password", path: "/user/change-password" },
+    ],
+  },
+  {
+    label: "Blog",
+    path: "#",
+    dropdown: [
+      { label: "Latest Posts", path: "#" },
+    ],
+  },
+  { label: "Contact Us", path: "/contact" },
+];
+
+// ── NavItem component ────────────────────────────────────────────────────────
+const NavItem = ({ item }) => (
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      gap: 0.5,
+      cursor: "pointer",
+      position: "relative",
+
+      "&:hover .dropdown": {
+        opacity: 1,
+        visibility: "visible",
+        top: "45px",
+      },
+    }}
+  >
+    <Typography
+      component={Link}
+      to={item.path}
+      sx={{
+        fontSize: "18px",
+        fontWeight: 500,
+        color: "#000",
+        textDecoration: "none",
+        "&:hover": { color: "#0D4453" },
+      }}
+    >
+      {item.label}
+    </Typography>
+
+    {item.dropdown && <KeyboardArrowDownIcon sx={{ fontSize: 18 }} />}
+
+    {/* Dropdown */}
+    {item.dropdown && (
+      <Box
+        className="dropdown"
+        sx={{
+          position: "absolute",
+          top: "60px",
+          left: 0,
+          minWidth: "220px",
+          background: "#fff",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+          borderRadius: "10px",
+          overflow: "hidden",
+          opacity: 0,
+          visibility: "hidden",
+          transition: "0.3s",
+          zIndex: 99,
+        }}
+      >
+        {item.dropdown.map((sub, i) => (
+          <Box
+            key={i}
+            component={Link}
+            to={sub.path}
+            sx={{
+              display: "block",
+              px: 3,
+              py: 1.8,
+              fontSize: "15px",
+              color: "#333",
+              textDecoration: "none",
+              borderBottom: "1px solid #f1f1f1",
+              "&:hover": { background: "#f7f7f7", color: "#0D4453" },
+            }}
+          >
+            {sub.label}
+          </Box>
+        ))}
+      </Box>
+    )}
+  </Box>
+);
+
+// ── Header ───────────────────────────────────────────────────────────────────
 const Header = () => {
+  const [language, setLanguage] = useState("en");
+  const navigate = useNavigate();
 
-const [language, setLanguage] = useState("en");
+  const handleLanguageChange = (event) => {
+    const lang = event.target.value;
+    setLanguage(lang);
 
-const handleLanguageChange = (event) => {
-  const lang = event.target.value;
-  setLanguage(lang);
+    const googleSelect = document.querySelector(".goog-te-combo");
+    if (googleSelect) {
+      googleSelect.value = lang;
+      googleSelect.dispatchEvent(new Event("change"));
+    }
 
-  const googleSelect = document.querySelector(".goog-te-combo");
-
-  if (googleSelect) {
-    googleSelect.value = lang;
-    googleSelect.dispatchEvent(new Event("change"));
-  }
-
-  document.documentElement.dir =
-    lang === "ar" ? "rtl" : "ltr";
-};
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  };
 
   return (
     <>
-      {/* TOP HEADER */}
-      <Box
-        sx={{
-          borderBottom: "1px solid #E5E5E5",
-          background: "#fff",
-          width: "100%",
-        }}
-      >
+      {/* ── TOP BAR ── */}
+      <Box sx={{ borderBottom: "1px solid #E5E5E5", background: "#fff", width: "100%" }}>
         <Container maxWidth={false}>
           <Box
             sx={{
@@ -45,14 +174,8 @@ const handleLanguageChange = (event) => {
               px: 4,
             }}
           >
-            {/* LEFT */}
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 4,
-              }}
-            >
+            {/* Left info */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
               <Box
                 sx={{
                   display: "flex",
@@ -63,51 +186,24 @@ const handleLanguageChange = (event) => {
                 }}
               >
                 <LocationOnOutlinedIcon sx={{ fontSize: 18, color: "#000" }} />
-
-                <Typography
-                  sx={{
-                    fontSize: "15px",
-                    color: "#000",
-                    fontWeight: 500,
-                  }}
-                >
+                <Typography sx={{ fontSize: "15px", color: "#000", fontWeight: 500 }}>
                   45 New Eskaton Road, Austria
                 </Typography>
               </Box>
 
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                }}
-              >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <AccessTimeOutlinedIcon sx={{ fontSize: 18, color: "#000" }} />
-
-                <Typography
-                  sx={{
-                    fontSize: "15px",
-                    color: "#000",
-                    fontWeight: 500,
-                  }}
-                >
+                <Typography sx={{ fontSize: "15px", color: "#000", fontWeight: 500 }}>
                   Sun to Friday: 8.00 am - 7.00 pm
                 </Typography>
               </Box>
             </Box>
 
-            {/* RIGHT */}
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 3,
-              }}
-            >
+            {/* Right controls */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
               <Select
                 value={language}
                 onChange={handleLanguageChange}
-                defaultValue="Language"
                 variant="outlined"
                 size="small"
                 IconComponent={KeyboardArrowDownIcon}
@@ -115,15 +211,8 @@ const handleLanguageChange = (event) => {
                   height: "38px",
                   borderRadius: "30px",
                   minWidth: "140px",
-
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#D9D9D9",
-                  },
-
-                  "& .MuiSelect-select": {
-                    py: 1,
-                    fontSize:"15px",
-                  },
+                  "& .MuiOutlinedInput-notchedOutline": { borderColor: "#D9D9D9" },
+                  "& .MuiSelect-select": { py: 1, fontSize: "15px" },
                 }}
               >
                 <MenuItem value="en">English</MenuItem>
@@ -135,28 +224,25 @@ const handleLanguageChange = (event) => {
               </Select>
 
               <Typography
-                sx={{
-                  fontSize: "15px",
-                  cursor: "pointer",
-                }}
+                component={Link}
+                to="#faq"
+                sx={{ fontSize: "15px", color: "#000", textDecoration: "none", cursor: "pointer" }}
               >
                 FAQ
               </Typography>
 
               <Typography
-                sx={{
-                  fontSize: "15px",
-                  cursor: "pointer",
-                }}
+                component={Link}
+                to="/contact"
+                sx={{ fontSize: "15px", color: "#000", textDecoration: "none", cursor: "pointer" }}
               >
                 Support
               </Typography>
 
               <Typography
-                sx={{
-                  fontSize: "15px",
-                  cursor: "pointer",
-                }}
+                component={Link}
+                to="/login"
+                sx={{ fontSize: "15px", color: "#000", textDecoration: "none", cursor: "pointer" }}
               >
                 Sign In / Register
               </Typography>
@@ -165,15 +251,11 @@ const handleLanguageChange = (event) => {
         </Container>
       </Box>
 
-      {/* MAIN HEADER */}
+      {/* ── MAIN HEADER ── */}
       <AppBar
         position="static"
         elevation={0}
-        sx={{
-          background: "#fff",
-          color: "#000",
-          width: "100%",
-        }}
+        sx={{ background: "#fff", color: "#000", width: "100%" }}
       >
         <Toolbar
           disableGutters
@@ -185,8 +267,10 @@ const handleLanguageChange = (event) => {
             px: 0,
           }}
         >
-          {/* LOGO */}
+          {/* Logo */}
           <Box
+            component={Link}
+            to="/"
             sx={{
               width: "370px",
               height: "95px",
@@ -199,20 +283,18 @@ const handleLanguageChange = (event) => {
               alignItems: "center",
               px: 5,
               flexShrink: 0,
+              textDecoration: "none",
             }}
           >
             <Box
               component="img"
               src="https://tourm-react.netlify.app/assets/img/logo.svg"
               alt="logo"
-              sx={{
-                width: "160px",
-                objectFit: "contain",
-              }}
+              sx={{ width: "160px", objectFit: "contain" }}
             />
           </Box>
 
-          {/* MENU */}
+          {/* Nav */}
           <Box
             sx={{
               display: "flex",
@@ -222,117 +304,18 @@ const handleLanguageChange = (event) => {
               justifyContent: "center",
             }}
           >
-            {/* HOME */}
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 0.5,
-                cursor: "pointer",
-                position: "relative",
-
-                "&:hover .dropdown": {
-                  opacity: 1,
-                  visibility: "visible",
-                  top: "45px",
-                },
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: "18px",
-                  fontWeight: 500,
-                }}
-              >
-                Home
-              </Typography>
-
-              <KeyboardArrowDownIcon sx={{ fontSize: 18 }} />
-
-              {/* DROPDOWN */}
-              <Box
-                className="dropdown"
-                sx={{
-                  position: "absolute",
-                  top: "60px",
-                  left: 0,
-                  width: "220px",
-                  background: "#fff",
-                  boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-                  borderRadius: "10px",
-                  overflow: "hidden",
-                  opacity: 0,
-                  visibility: "hidden",
-                  transition: "0.3s",
-                  zIndex: 99,
-                }}
-              >
-                {["Home One", "Home Two", "Home Three"].map((item, i) => (
-                  <Box
-                    key={i}
-                    sx={{
-                      px: 3,
-                      py: 2,
-                      cursor: "pointer",
-                      borderBottom: "1px solid #f1f1f1",
-
-                      "&:hover": {
-                        background: "#f7f7f7",
-                      },
-                    }}
-                  >
-                    {item}
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-
-            {/* OTHER MENUS */}
-            {[
-              "About Us",
-              "Destination",
-              "Service",
-              "Activities",
-              "Pages",
-              "Blog",
-              "Contact Us",
-            ].map((item, index) => (
-              	<Box
-					key={index}
-					sx={{
-					display: "flex",
-					alignItems: "center",
-					gap: 0.5,
-					cursor: "pointer",
-					}}
-              	>
-					<Typography
-						sx={{
-							fontSize: "18px",
-							fontWeight: 500,
-						}}
-					>
-						{item}
-					</Typography>
-
-					{[
-						"Destination",
-						"Service",
-						"Activities",
-						"Pages",
-						"Blog",
-					].includes(item) && (
-						<KeyboardArrowDownIcon sx={{ fontSize: 18 }} />
-					)}
-              	</Box>
+            {NAV_ITEMS.map((item, i) => (
+              <NavItem key={i} item={item} />
             ))}
           </Box>
 
-          {/* BUTTON */}
+          {/* CTA Button */}
           <Box sx={{ pr: 4 }}>
             <Button
               variant="contained"
               endIcon={<ArrowOutwardIcon />}
+              component={Link}
+              to="/booking"
               sx={{
                 width: "180px",
                 height: "56px",
@@ -342,9 +325,8 @@ const handleLanguageChange = (event) => {
                 fontSize: "20px",
                 fontWeight: 600,
                 boxShadow: "none",
-
                 "&:hover": {
-                  background: "#0D4453",
+                  background: "#1a6b82",
                   boxShadow: "none",
                 },
               }}
@@ -356,6 +338,6 @@ const handleLanguageChange = (event) => {
       </AppBar>
     </>
   );
-}
+};
 
 export default Header;

@@ -100,7 +100,7 @@ export default function MyBookings() {
         </Card>
       ) : (
         <Grid container spacing={3}>
-          {bookings.map((b) => (
+         
             <TableContainer
               component={Paper}
               elevation={0}
@@ -206,7 +206,7 @@ export default function MyBookings() {
                 </TableBody>
               </Table>
             </TableContainer>
-          ))}
+         
         </Grid>
       )}
     </Box>
